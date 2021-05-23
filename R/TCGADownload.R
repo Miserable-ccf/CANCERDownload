@@ -9,4 +9,7 @@
 #' TCGA()
 TCGA <- function(){
   message("Hello TCGA")
+  message( getwd())
 }
+TCGA()
+
