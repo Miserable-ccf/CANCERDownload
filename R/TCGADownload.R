@@ -315,7 +315,7 @@ if(F){
 }
 #' DeSeq2Analysis
 #' @export
-DeSeq2Analysis <-function(count,filename=NULL){
+DeSeq2Analysis <-function(count,project,filename=NULL){
 
   if(F){
     count <- a
@@ -481,8 +481,10 @@ CoxMulti <- function(clinical,count,gene){
 
 #' ROC
 #' @export
-ROC <- function(data){
+ROC <- function(data,predict.time=3){
   library(lattice)
+  roc <- survivalROC(Stime=data$futime_year ,status=data$fustat,marker=data$riskScoreNum,
+                     predict.time=predict.time,method="KM")
   res <- xyplot(TP~FP,roc,main=paste("ROC curve(","AUC=",round(roc$AUC,3),")"),
                 xlab="False postive rate",ylab="True positive rate",panel = function(x,y){
                   panel.xyplot(x,y,type="l",lwd=2,cex.main=1.3,cex.lab=1.2,cex.axis=1.2,font=1.2,col="red")

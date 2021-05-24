@@ -4,7 +4,7 @@
 \alias{ROC}
 \title{ROC}
 \usage{
-ROC(data)
+ROC(data, predict.time = 3)
 }
 \description{
 ROC

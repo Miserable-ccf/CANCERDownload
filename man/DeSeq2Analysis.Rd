@@ -4,7 +4,7 @@
 \alias{DeSeq2Analysis}
 \title{DeSeq2Analysis}
 \usage{
-DeSeq2Analysis(count, filename = NULL)
+DeSeq2Analysis(count, project, filename = NULL)
 }
 \description{
 DeSeq2Analysis
