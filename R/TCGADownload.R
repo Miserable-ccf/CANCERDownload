@@ -115,10 +115,6 @@
 }
 
 #' TCGA Download
-
-
-
-#' TCGA Download
 #'
 #' This function allows you to express your love of cats.
 #' @param love Do you love cats? Defaults to TRUE.
@@ -131,6 +127,7 @@ TCGA <- function(){
   message( getwd())
 }
 TCGA()
+
 
 #' Download clinical
 #' @export
@@ -228,11 +225,9 @@ getCount <- function(project,filename=NULL,workflow.type = "HTSeq - Counts"){
 }
 
 if(F){
-
   project="TCGA-ESCA"
   a <- getCount("TCGA-ESCA",workflow.type="HTSeq - FPKM",filename = "fpkm-count")
   a <- getCount("TCGA-ESCA")
-
 }
 
 
@@ -289,6 +284,7 @@ getmiRNACount <- function(project,filename=NULL){
   }
 }
 
+
 #' clinical_count
 #' @export
 clinical_count <- function(clinical,count,symbol=NULL){
@@ -313,6 +309,8 @@ if(F){
   clinical_count <- clinical_count(clinical = clinical,count = a@count)
 
 }
+
+
 #' DeSeq2Analysis
 #' @export
 DeSeq2Analysis <-function(count,project,filename=NULL){
@@ -371,7 +369,6 @@ if(F){
 }
 
 setGeneric("lnRAN_mRNA",function(count_type) standardGeneric("lnRAN_mRNA"))
-
 #' lnRAN_mRNA DEGTable
 #' @export
 setMethod("lnRAN_mRNA","DEGTable",function(count_type){
@@ -404,6 +401,7 @@ if(F){
   dim( lnRAN_mRNA@metadata)
 }
 
+
 CoxSingle_ <- function(data,gene){
   outTab <- data.frame()
   for(i in gene){
@@ -418,6 +416,7 @@ CoxSingle_ <- function(data,gene){
   return(outTab)
 }
 
+
 #' CoxSingle
 #' @export
 CoxSingle <- function(clinical,count,gene){
@@ -429,19 +428,31 @@ CoxSingle <- function(clinical,count,gene){
 
 #' CoxMulti
 #' @export
-CoxMulti <- function(clinical,count,gene){
+CoxMulti <- function(clinical,count,gene,cutoff=0.05){
   if(F){
-    clinical <- clinical
-    a <- getCount("TCGA-ESCA")
-    count <- a@count
+    clinical <- getClinical(project)
+    count <- getCount(project)
+    count <- count@count
+    deg <- DeSeq2Analysis(count,project = project)
     gene <- deg@deg%>%
       arrange(desc(log2FoldChange))%>%
       rownames_to_column("symbol")%>%
       dplyr::slice(1:5)%>%
       pull("symbol")
+    cutoff=0.05
   }
+
   data <- clinical_count(clinical = clinical,count = count,symbol=gene)
-  coxSingle <- CoxSingle_(data,gene)
+  gene <- make.names(gene)
+  colnames(data) <- make.names(colnames(data))
+
+  coxSingle <- CoxSingle_(data,gene)%>%
+    filter(pvalue<cutoff)
+
+  if(dim(coxSingle)[1] <1){
+    message("没有p值小于 ",cutoff," 的基因")
+    return(NULL)
+  }
   gene <- coxSingle$id
   formula <-as.formula(paste0("Surv(futime_year,fustat)~",paste0(gene,collapse = "+")))
   cox <- coxph(formula,data=data)
@@ -493,6 +504,7 @@ ROC <- function(data,predict.time=3){
   return(res)
 }
 
+
 #' Survival
 #' @export
 Survival <- function(data){
@@ -502,6 +514,7 @@ Survival <- function(data){
                     risk.table.height = 0.3,data = data)
   return(res)
 }
+
 
 
 if(F){
@@ -526,6 +539,3 @@ if(F){
   Survival(coxMulti_res)
 }
 
-
-
-#### 提取mRNA和lnRNA

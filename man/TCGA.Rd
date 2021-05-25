@@ -2,8 +2,7 @@
 % Please edit documentation in R/TCGADownload.R
 \name{TCGA}
 \alias{TCGA}
-\title{TCGA Download
-TCGA Download}
+\title{TCGA Download}
 \usage{
 TCGA()
 }

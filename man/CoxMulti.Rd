@@ -4,7 +4,7 @@
 \alias{CoxMulti}
 \title{CoxMulti}
 \usage{
-CoxMulti(clinical, count, gene)
+CoxMulti(clinical, count, gene, cutoff = 0.05)
 }
 \description{
 CoxMulti

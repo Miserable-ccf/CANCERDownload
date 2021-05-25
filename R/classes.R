@@ -24,6 +24,7 @@ setClass("lnRAN_mRNA",
            metadata=data.frame(matrix(nr=0,nc=0))
          )
 )
+
 setClass("DEGTable",
          slots=list(
            deg="data.frame",
@@ -34,8 +35,6 @@ setClass("DEGTable",
            gene_type=vector()
          )
 )
-
-
 
 setClass("CoxMulti",
          slots=list(
